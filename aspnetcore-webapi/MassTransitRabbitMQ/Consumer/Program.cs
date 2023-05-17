@@ -1,10 +1,13 @@
-﻿using MassTransit;
-using Newtonsoft.Json;
+﻿using System.Text.Json;
+using MassTransit;
+// using Newtonsoft.Json;
 using SharedModels;
+
 
 var busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
 {
-    cfg.ReceiveEndpoint("order-created-event", e =>
+    cfg.ReceiveEndpoint("order-created-event",
+        e =>
     {
         e.Consumer<OrderCreatedConsumer>();
     });
@@ -28,8 +31,9 @@ class OrderCreatedConsumer : IConsumer<OrderCreated>
 {
     public async Task Consume(ConsumeContext<OrderCreated> context)
     {
-        var jsonMessage = JsonConvert.SerializeObject(context.Message);
+        var jsonMessage = JsonSerializer.Serialize(context.Message);
         Console.WriteLine($"OrderCreated message: {jsonMessage}");
+        await Task.FromResult(0);
     }
 }
 
