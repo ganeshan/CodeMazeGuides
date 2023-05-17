@@ -18,6 +18,7 @@ namespace Producer.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderDto orderDto)
         {
+            // publish event
             await _publishEndpoint.Publish<OrderCreated>(new
             {
                 Id = 1,
